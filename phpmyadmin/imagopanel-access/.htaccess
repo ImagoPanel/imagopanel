@@ -1,0 +1,8 @@
+AuthType None
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule mod_access_compat.c>
+    Order Deny,Allow
+    Deny from all
+</IfModule>

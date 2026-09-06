@@ -1,0 +1,25 @@
+# Подключить один раз в глобальной конфигурации Apache ПОСЛЕ загрузки mod_alias
+# и ДО более общих Alias для /mail/, /.well-known/ или /autodiscover/.
+# Один точный AliasMatch обслуживает все пути и не создаёт пересекающихся Alias.
+
+
+AliasMatch "(?i)^/(?:mail/config-v1\.1\.xml|mail/apple(?:-pop3|-imap)?\.mobileconfig|\.well-known/autoconfig/mail/config-v1\.1\.xml|autodiscover/autodiscover\.xml|config\.xml)$" "/var/www/imagopanel/public_html/mailautoconfig/index.php"
+
+<Directory "/var/www/imagopanel/public_html/mailautoconfig">
+    Options -Indexes
+    AllowOverride All
+    Require all granted
+    ProxyFCGISetEnvIf "true" PHP_ADMIN_VALUE "display_errors=Off\nlog_errors=On"
+
+    <Files "index.php">
+        SetHandler "proxy:unix:/run/php-fpm/www.sock|fcgi://localhost"
+    </Files>
+</Directory>
+
+# Запрет кеширования действует глобально только на URL автоконфигурации.
+<LocationMatch "(?i)^/(?:mail/config-v1\.1\.xml|mail/apple(?:-pop3|-imap)?\.mobileconfig|\.well-known/autoconfig/mail/config-v1\.1\.xml|autodiscover/autodiscover\.xml|config\.xml)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0, private"
+    Header always set Pragma "no-cache"
+    Header always set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+    Header always set X-Content-Type-Options "nosniff"
+</LocationMatch>

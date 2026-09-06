@@ -1,0 +1,77 @@
+name: Bug report
+description: Report a reproducible problem in ImagoPanel
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Remove credentials, customer data, private domains, email addresses, and internal logs before submitting. Security vulnerabilities must be reported privately according to SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: ImagoPanel version or commit
+      placeholder: Version tag or commit identifier
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Linux distribution, Apache version, PHP version, and affected service version
+      placeholder: AlmaLinux 8, Apache 2.4.x, PHP 7.4.x, MariaDB 10.x
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Authentication and access
+        - Domains and Apache
+        - PHP and PHP-FPM
+        - Databases and phpMyAdmin
+        - Mail and OpenDKIM
+        - DNS providers
+        - File Manager or File Editor
+        - Diagnostics or cron
+        - User interface
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem description
+      description: Describe what happened and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open ...
+        2. Configure ...
+        3. Select ...
+        4. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Sanitized diagnostics
+      description: Include relevant root/admin diagnostic statuses or errors without secrets or customer data.
+      render: text
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing Issues for the same problem.
+          required: true
+        - label: I removed credentials, secrets, customer data, and private identifiers.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

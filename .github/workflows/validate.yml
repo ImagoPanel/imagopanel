@@ -1,0 +1,60 @@
+name: Repository validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php-syntax:
+    name: PHP 7.4 syntax
+    runs-on: ubuntu-latest
+    container: php:7.4-cli
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Lint tracked PHP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find . -type f -name '*.php' -not -path './.git/*' -not -path './phpmyadmin/vendor/*' -print0)
+      - name: Test isolated phpMyAdmin access adapter
+        run: php tests/PhpMyAdminAccessAdapterTest.php
+
+  repository-hygiene:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Reject private and runtime files
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden="$(git ls-files | grep -E '(^|/)\.svn/|(^|/)\.idea/|^config\.php$|^landing/|^TODO\.md$|^TODO_GITHUB\.md$|^FIXED\.md$|^data/.*\.json$|^data/\.locks/|^storage/(domain-tool-logs|domain-tool-state|locks|root-logs|statuses|mail-migrations|opendkim-pending|opendkim-test)/|^(access|access\.ssl|error|error\.ssl)\.log$' || true)"
+          if [ -n "$forbidden" ]; then
+            echo "Forbidden local or runtime files are tracked:"
+            echo "$forbidden"
+            exit 1
+          fi
+          git ls-files --error-unmatch config.example.php >/dev/null
+      - name: Reject removed vulnerable feature paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Eqi 'uploadurl|Upload from URL|upload_from_url|curl_init\(' filemanager/index.php; then
+            echo 'Tiny File Manager URL upload or remote-fetch code is present.'
+            exit 1
+          fi
+          if grep -Eqi 'pheditor_password|changepassword|terminal|shell_exec|(^|[^[:alnum:]_])(system|exec|passthru|popen|proc_open)[[:space:]]*\(' fileeditor/index.php; then
+            echo 'Removed Pheditor authentication or terminal code is present.'
+            exit 1
+          fi
+          if grep -Eqi 'DomainToolAccess|\.\.?/.*lib/|config\.php' phpmyadmin/config.inc.php phpmyadmin/imagopanel-access/Adapter.php; then
+            echo 'phpMyAdmin still depends on AGPL application source.'
+            exit 1
+          fi

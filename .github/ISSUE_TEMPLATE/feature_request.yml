@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose a focused improvement to ImagoPanel
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the operational problem first. Focused proposals are easier to review and implement safely.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What hosting or administration workflow is difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the expected user-visible behavior and relevant server integrations.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe existing workarounds or other approaches.
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and security considerations
+      description: Note PHP 7.4, service versions, permissions, data migration, or security implications.
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing Issues and Discussions for this request.
+          required: true
+        - label: This proposal does not include credentials or customer data.
+          required: true

@@ -1,0 +1,13 @@
+Options -Indexes
+AuthType None
+<IfModule mod_access_compat.c>
+    Order Allow,Deny
+    Allow from all
+    Satisfy Any
+</IfModule>
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+<FilesMatch "^(config\.inc\.php|composer\.(json|lock)|package\.json)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,36 @@
+.svn/
+.idea/
+/config.php
+/landing/
+/TODO.md
+/TODO_GITHUB.md
+/FIXED.md
+
+# Local control data, user records and transient locks
+/data/*.json
+/data/.locks/
+
+# Runtime output; keep only the access-control placeholder in storage
+/*.log
+/storage/*
+!/storage/.htaccess
+/storage/domain-tool-logs/
+/storage/domain-tool-state/
+/storage/locks/
+/storage/root-logs/
+/storage/statuses/
+
+# Local mail/DKIM jobs and generated reports
+/storage/mail-migrations/
+/storage/opendkim-pending/
+/storage/opendkim-test/
+
+# Common local backups and secrets
+*.bak
+*.backup
+*.old
+*.orig
+*.pem
+*.key
+*.p12
+*.pfx
